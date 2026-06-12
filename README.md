@@ -94,3 +94,26 @@ tsbuild -Help
 ```
 コマンドの機能一覧と簡単な概要をいつでもコンソールに表示できます。
 
+---
+
+## ✉️ 問い合わせ先
+
+質問やフィードバック、バグ報告等は以下までご連絡ください。
+*   **X (旧Twitter):** [@Lapius7](https://x.com/Lapius7)
+*   **GitHub Issues:** [Lapius7/tsbuild/issues](https://github.com/Lapius7/tsbuild/issues)
+
+---
+
+## ⚠️ 免責事項
+
+本ソフトウェア（スクリプト）の使用によって生じた、直接的・間接的な損害（データ消失、業務中断、PCの不具合等）について、作者は一切の責任を负いません。自己責任のもとでご使用ください。
+
+---
+
+## 📄 ライセンス & コピーライト
+
+本プロジェクトは [MIT License](https://opensource.org/licenses/MIT) のもとで公開されています。
+
+Copyright (c) 2026 Lapius7
+
+
