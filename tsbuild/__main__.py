@@ -239,11 +239,21 @@ def fetch_remote_version() -> Optional[str]:
         return None
 
 
+def _parse_ver(v: str) -> tuple:
+    try:
+        return tuple(int(x) for x in v.split("."))
+    except ValueError:
+        return (0,)
+
+def _is_newer(remote: str) -> bool:
+    return _parse_ver(remote) > _parse_ver(__version__)
+
 def _ver_badge(remote: Optional[str], lang: str) -> str:
     s = T[lang]
     if remote is None:        return c(s["ver_fail"], GRAY)
     if remote == __version__: return c(s["ver_ok"], GREEN)
-    return c(s["ver_new"].format(remote), YEL)
+    if _is_newer(remote):     return c(s["ver_new"].format(remote), YEL)
+    return c(s["ver_ok"], GREEN)
 
 
 def _logo():
@@ -520,7 +530,7 @@ def main():
         return
 
     remote = fetch_remote_version()
-    if remote and remote != __version__:
+    if remote and _is_newer(remote):
         print()
         print(c(T[lang]["update"].format(remote), YEL))
 
