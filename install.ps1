@@ -1,4 +1,4 @@
-# 💡 インストールを実行するPowerShellスクリプト
+﻿# 💡 インストールを実行するPowerShellスクリプト
 $functionName = "tsbuild"
 $functionCode = @'
 function tsbuild {
@@ -20,6 +20,15 @@ function tsbuild {
         Write-Host "  4. tsc --watch によるリアルタイム自動コンパイル"
         Write-Host "  5. ファイル変更時のブラウザ自動更新（ホットリロード）"
         Write-Host "  6. [Ctrl + C] 終了時のゾンビプロセス自動クリーンアップ"
+        Write-Host "`n📁 対象プロジェクトの構成:" -ForegroundColor Yellow
+        Write-Host "  myapp/"
+        Write-Host "  ├── src/"
+        Write-Host "  │   └── index.ts"
+        Write-Host "  ├── dist/              " -NoNewline; Write-Host "← tsc が自動生成" -ForegroundColor DarkGray
+        Write-Host "  ├── index.html"
+        Write-Host "  ├── server.ts          " -NoNewline; Write-Host "← tsbuild が起動するサーバー" -ForegroundColor DarkGray
+        Write-Host "  ├── tsconfig.json"
+        Write-Host "  └── package.json"
         Write-Host "==================================================`n" -ForegroundColor DarkGray
         return
     }
@@ -38,12 +47,24 @@ function tsbuild {
         bun server.ts
     } -ArgumentList $currentDir
 
-    bun x tsc > $null
+    $tscOutput = bun x tsc 2>&1
+    if ($LASTEXITCODE -ne 0) {
+        Write-Host "⚠ TypeScript コンパイルエラー:" -ForegroundColor Yellow
+        $tscOutput | ForEach-Object { Write-Host "  $_" -ForegroundColor Yellow }
+    }
 
-    Start-Sleep -Milliseconds 600
-    $jobLog = Receive-Job -Job $serverJob
     $targetUrl = "http://localhost:53000"
-    if ($jobLog -match "http://localhost:\d+") { $targetUrl = $matches[0] }
+    $maxWait = 5000
+    $waited = 0
+    while ($waited -lt $maxWait) {
+        Start-Sleep -Milliseconds 200
+        $waited += 200
+        $combined = Receive-Job -Job $serverJob -Keep | Out-String
+        if ($combined -match "http://localhost:\d+") {
+            $targetUrl = $matches[0]
+            break
+        }
+    }
     Start-Process $targetUrl
 
     Write-Host "==================================================" -ForegroundColor Yellow
@@ -70,15 +91,45 @@ if (!(Test-Path $PROFILE)) {
 $profileContent = Get-Content $PROFILE -Raw -ErrorAction SilentlyContinue
 if ([string]::IsNullOrEmpty($profileContent)) { $profileContent = "" }
 
-$pattern = "(?s)function\s+$functionName\s*\{.*?\n\}"
-if ($profileContent -match $pattern) {
-    $profileContent = $profileContent -replace $pattern, ""
+$beginMarker = "# <<BEGIN:$functionName>>"
+$endMarker = "# <<END:$functionName>>"
+$markerPattern = "(?s)# <<BEGIN:$functionName>>.*?# <<END:$functionName>>"
+$oldPattern = "(?s)function\s+$functionName\s*\{.*?\r?\n\}"
+
+if ($profileContent -match $markerPattern) {
+    $profileContent = $profileContent -replace $markerPattern, ""
+} elseif ($profileContent -match $oldPattern) {
+    $profileContent = $profileContent -replace $oldPattern, ""
 }
 
-$newProfileContent = $profileContent.Trim() + "`n`n" + $functionCode
+$block = "$beginMarker`n$functionCode`n$endMarker"
+$newProfileContent = $profileContent.Trim() + "`n`n" + $block
 $newProfileContent.Trim() | Out-File -FilePath $PROFILE -Encoding utf8 -Force
 
 Invoke-Expression $functionCode
 
 Write-Host "✨ tsbuild コマンドのインストール/更新が完了しました！" -ForegroundColor Green
+Write-Host ""
+Write-Host "📦 インストールコマンド（再インストール・更新時）:" -ForegroundColor Cyan
+Write-Host "  powershell -ExecutionPolicy Bypass -File `"$PSCommandPath`""
+Write-Host ""
+Write-Host "📋 使い方:" -ForegroundColor Cyan
+Write-Host "  tsbuild          " -NoNewline; Write-Host "# 開発サーバー起動・ホットリロード開始" -ForegroundColor DarkGray
+Write-Host "  tsbuild -Help    " -NoNewline; Write-Host "# 詳細ヘルプを表示" -ForegroundColor DarkGray
+Write-Host ""
+Write-Host "📁 対象プロジェクトの構成（tssetup で作成した場合）:" -ForegroundColor Cyan
+Write-Host "  myapp/"
+Write-Host "  ├── src/"
+Write-Host "  │   └── index.ts"
+Write-Host "  ├── dist/              " -NoNewline; Write-Host "← tsc が自動生成" -ForegroundColor DarkGray
+Write-Host "  ├── index.html"
+Write-Host "  ├── server.ts          " -NoNewline; Write-Host "← tsbuild が起動するサーバー" -ForegroundColor DarkGray
+Write-Host "  ├── tsconfig.json"
+Write-Host "  └── package.json"
+Write-Host ""
+Write-Host "🚀 プロジェクトの始め方:" -ForegroundColor Cyan
+Write-Host "  tssetup myapp    " -NoNewline; Write-Host "# プロジェクト作成" -ForegroundColor DarkGray
+Write-Host "  cd myapp         " -NoNewline; Write-Host "# ディレクトリ移動" -ForegroundColor DarkGray
+Write-Host "  tsbuild          " -NoNewline; Write-Host "# 開発サーバー起動" -ForegroundColor DarkGray
+Write-Host ""
 Write-Host "新しいPowerShellウィンドウを開くか、 '. `$PROFILE' を実行して即時反映させてください。" -ForegroundColor Yellow

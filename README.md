@@ -27,12 +27,11 @@
 PowerShellで以下のコマンドを実行するだけで、自動的にお使いの環境（`$PROFILE`）に `tsbuild` コマンドがインストールされます。
 
 ```powershell
-irm https://raw.githubusercontent.com/あなたのユーザー名/tsbuild/main/install.ps1 | iex
+irm https://raw.githubusercontent.com/Lapius7/tsbuild/main/install.ps1 | iex
 ```
 
 > [!NOTE]
 >
-> - 「あなたのユーザー名」の部分は、GitHubに公開したリポジトリのユーザー名（または組織名）に書き換えてください。
 > - インストール完了後、現在のPowerShellセッションに反映するには `. $PROFILE` を実行するか、新しくPowerShellを開き直してください。
 
 ---
@@ -97,6 +96,23 @@ tsbuild -Help
 ```
 
 コマンドの機能一覧と簡単な概要をいつでもコンソールに表示できます。
+
+---
+
+## 📁 対象プロジェクトの構成
+
+`tsbuild` は `tssetup` で作成したプロジェクトフォルダ（以下の構成）を前提としています。プロジェクトのルートディレクトリで実行してください。
+
+```
+myapp/
+├── src/
+│   └── index.ts        ← 編集対象のTypeScriptファイル
+├── dist/               ← tsc が自動生成するJS出力先
+├── index.html          ← フロントエンドのHTML
+├── server.ts           ← tsbuild が起動するWebサーバー
+├── tsconfig.json       ← TypeScript コンパイラ設定
+└── package.json        ← Bun プロジェクト設定
+```
 
 ---
 
