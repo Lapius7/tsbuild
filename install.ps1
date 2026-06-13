@@ -8,6 +8,7 @@ function tsbuild {
     )
 
     $localVersion = "1.0.1"
+    $remoteVersion = $null
     try {
         $remoteVersion = (irm https://raw.githubusercontent.com/Lapius7/tsbuild/main/version.txt -TimeoutSec 3 -ErrorAction Stop).Trim()
         if ($remoteVersion -ne $localVersion) {
@@ -17,6 +18,31 @@ function tsbuild {
             return
         }
     } catch {}
+
+    if (!(Test-Path "package.json") -or !(Test-Path "server.ts")) {
+        Write-Host ""
+        Write-Host "⚡ tsbuild" -ForegroundColor Cyan -NoNewline; Write-Host "  v$localVersion" -ForegroundColor DarkGray
+        Write-Host "Bun + TypeScript 開発サーバーをホットリロード付きで1コマンド起動するツール"
+        Write-Host ""
+        Write-Host "開発者  : " -NoNewline -ForegroundColor Yellow; Write-Host "Lapius7"
+        Write-Host "X       : " -NoNewline -ForegroundColor Yellow; Write-Host "https://x.com/Lapius7"
+        Write-Host "GitHub  : " -NoNewline -ForegroundColor Yellow; Write-Host "https://github.com/Lapius7/tsbuild"
+        Write-Host ""
+        if ($null -ne $remoteVersion) {
+            if ($remoteVersion -eq $localVersion) {
+                Write-Host "バージョン  : $localVersion  " -NoNewline; Write-Host "✅ 最新です" -ForegroundColor Green
+            } else {
+                Write-Host "バージョン  : $localVersion  " -NoNewline; Write-Host "⬆ 最新: $remoteVersion" -ForegroundColor Yellow
+            }
+        } else {
+            Write-Host "バージョン  : $localVersion  " -NoNewline; Write-Host "(バージョン確認失敗)" -ForegroundColor DarkGray
+        }
+        Write-Host ""
+        Write-Host "使い方  : tssetup でプロジェクトを作成してから、そのフォルダ内で tsbuild を実行してください" -ForegroundColor DarkGray
+        Write-Host "ヘルプ  : tsbuild -Help" -ForegroundColor DarkGray
+        Write-Host ""
+        return
+    }
 
     if ($Help) {
         Write-Host "`n⚡ [tsbuild] コマンドヘルプ" -ForegroundColor Cyan
