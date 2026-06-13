@@ -1,0 +1,28 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "tsbuild"
+version = "1.0.2"
+description = "Bun + TypeScript 開発サーバーをホットリロード付きで1コマンド起動するツール"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [{ name = "Lapius7", email = "me@lapius7.com" }]
+keywords = ["bun", "typescript", "hot-reload", "dev-server", "cli"]
+classifiers = [
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: Microsoft :: Windows",
+    "Topic :: Software Development",
+]
+
+[project.scripts]
+tsbuild = "tsbuild.__main__:main"
+
+[project.urls]
+Homepage = "https://github.com/Lapius7/tsbuild"
+Issues   = "https://github.com/Lapius7/tsbuild/issues"
