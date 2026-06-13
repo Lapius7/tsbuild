@@ -7,6 +7,17 @@ function tsbuild {
         [Parameter(Mandatory = $false)][switch]$Help
     )
 
+    $localVersion = "1.0.1"
+    try {
+        $remoteVersion = (irm https://raw.githubusercontent.com/Lapius7/tsbuild/main/version.txt -TimeoutSec 3 -ErrorAction Stop).Trim()
+        if ($remoteVersion -ne $localVersion) {
+            Write-Host "🔄 新しいバージョン ($remoteVersion) があります。自動更新しています..." -ForegroundColor Yellow
+            irm https://raw.githubusercontent.com/Lapius7/tsbuild/main/install.ps1 | iex
+            Write-Host "✅ 更新完了！もう一度コマンドを実行してください。" -ForegroundColor Green
+            return
+        }
+    } catch {}
+
     if ($Help) {
         Write-Host "`n⚡ [tsbuild] コマンドヘルプ" -ForegroundColor Cyan
         Write-Host "==================================================" -ForegroundColor DarkGray
