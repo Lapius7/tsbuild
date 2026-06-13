@@ -1,4 +1,5 @@
 import itertools
+import json
 import locale
 import os
 import re
@@ -238,9 +239,9 @@ def check_bun(lang: str):
 
 def fetch_remote_version() -> Optional[str]:
     try:
-        url = "https://raw.githubusercontent.com/Lapius7/tsbuild/main/version.txt"
+        url = "https://pypi.org/pypi/tsbuild/json"
         with urllib.request.urlopen(url, timeout=3) as r:
-            return r.read().decode().strip()
+            return json.loads(r.read())["info"]["version"]
     except Exception:
         return None
 
