@@ -122,7 +122,7 @@ Invoke-Expression $functionCode
 Write-Host "✨ tsbuild コマンドのインストール/更新が完了しました！" -ForegroundColor Green
 Write-Host ""
 Write-Host "📦 インストールコマンド（再インストール・更新時）:" -ForegroundColor Cyan
-Write-Host "  powershell -ExecutionPolicy Bypass -File `"$PSCommandPath`""
+Write-Host "  irm https://raw.githubusercontent.com/Lapius7/tsbuild/main/install.ps1 | iex"
 Write-Host ""
 Write-Host "📋 使い方:" -ForegroundColor Cyan
 Write-Host "  tsbuild          " -NoNewline; Write-Host "# 開発サーバー起動・ホットリロード開始" -ForegroundColor DarkGray
