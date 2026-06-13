@@ -152,11 +152,14 @@ if ([string]::IsNullOrEmpty($profileContent)) { $profileContent = "" }
 
 $beginMarker = "# <<BEGIN:$functionName>>"
 $endMarker = "# <<END:$functionName>>"
-$markerPattern = "(?s)# <<BEGIN:$functionName>>.*?# <<END:$functionName>>"
+$markerPattern = "(?s)# <<BEGIN:$functionName>>.*# <<END:$functionName>>"
 
 if ($profileContent -match $markerPattern) {
     $profileContent = $profileContent -replace $markerPattern, ""
-} elseif ($profileContent -match "function\s+$functionName\b") {
+}
+$profileContent = $profileContent.Replace("# <<END:$functionName>>", "").Trim()
+
+if (-not ($profileContent -match "# <<BEGIN:$functionName>>") -and $profileContent -match "function\s+$functionName\b") {
     Write-Host ""
     Write-Host "⚠ 警告: マーカーのない旧バージョンの $functionName がプロファイルに存在します。" -ForegroundColor Yellow
     Write-Host "  自動削除は行いません。以下を手動で実行してください：" -ForegroundColor Yellow
