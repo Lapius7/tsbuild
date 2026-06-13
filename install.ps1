@@ -131,12 +131,20 @@ if ([string]::IsNullOrEmpty($profileContent)) { $profileContent = "" }
 $beginMarker = "# <<BEGIN:$functionName>>"
 $endMarker = "# <<END:$functionName>>"
 $markerPattern = "(?s)# <<BEGIN:$functionName>>.*?# <<END:$functionName>>"
-$oldPattern = "(?s)function\s+$functionName\s*\{.*?\r?\n\}"
 
 if ($profileContent -match $markerPattern) {
     $profileContent = $profileContent -replace $markerPattern, ""
-} elseif ($profileContent -match $oldPattern) {
-    $profileContent = $profileContent -replace $oldPattern, ""
+} elseif ($profileContent -match "function\s+$functionName\b") {
+    Write-Host ""
+    Write-Host "⚠ 警告: マーカーのない旧バージョンの $functionName がプロファイルに存在します。" -ForegroundColor Yellow
+    Write-Host "  自動削除は行いません。以下を手動で実行してください：" -ForegroundColor Yellow
+    Write-Host ""
+    Write-Host "  1. メモ帳でプロファイルを開く：" -ForegroundColor Cyan
+    Write-Host "     notepad `$PROFILE" -ForegroundColor White
+    Write-Host "  2. 'function $functionName' から始まるブロックを手動で削除する" -ForegroundColor Cyan
+    Write-Host "  3. 保存後にこのインストールコマンドを再実行する" -ForegroundColor Cyan
+    Write-Host ""
+    return
 }
 
 $block = "$beginMarker`n$functionCode`n$endMarker"
