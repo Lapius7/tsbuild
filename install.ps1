@@ -1,4 +1,4 @@
-﻿# 💡 インストールを実行するPowerShellスクリプト
+# 💡 インストールを実行するPowerShellスクリプト
 $functionName = "tsbuild"
 $functionCode = @'
 function tsbuild {
@@ -149,7 +149,7 @@ if ($profileContent -match $markerPattern) {
 
 $block = "$beginMarker`n$functionCode`n$endMarker"
 $newProfileContent = $profileContent.Trim() + "`n`n" + $block
-$newProfileContent.Trim() | Out-File -FilePath $PROFILE -Encoding utf8 -Force
+[System.IO.File]::WriteAllText($PROFILE, $newProfileContent.Trim(), [System.Text.UTF8Encoding]::new($false))
 
 Invoke-Expression $functionCode
 
