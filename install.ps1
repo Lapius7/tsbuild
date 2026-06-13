@@ -17,8 +17,9 @@ function tsbuild {
             return
         }
         $profileContent = Get-Content $PROFILE -Raw -ErrorAction SilentlyContinue
-        if ($profileContent -match "# <<BEGIN:tsbuild>>") {
-            $profileContent = $profileContent -replace "(?s)`n?# <<BEGIN:tsbuild>>.*?# <<END:tsbuild>>", ""
+        $n = "tsbuild"
+        if ($profileContent -match "# <<BEGIN:${n}>>") {
+            $profileContent = $profileContent -replace "(?s)`n?# <<BEGIN:${n}>>.*?# <<END:${n}>>", ""
             [System.IO.File]::WriteAllText($PROFILE, $profileContent.Trim(), [System.Text.UTF8Encoding]::new($true))
             Remove-Item Function:tsbuild -ErrorAction SilentlyContinue
             Write-Host "✅ tsbuild をアンインストールしました。" -ForegroundColor Green
