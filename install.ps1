@@ -4,8 +4,22 @@ $functionCode = @'
 function tsbuild {
     [CmdletBinding()]
     param (
-        [Parameter(Mandatory = $false)][switch]$Help
+        [Parameter(Mandatory = $false)][switch]$Help,
+        [Parameter(Mandatory = $false)][switch]$Uninstall
     )
+
+    if ($Uninstall) {
+        $profileContent = Get-Content $PROFILE -Raw -ErrorAction SilentlyContinue
+        if ($profileContent -match "# <<BEGIN:tsbuild>>") {
+            $profileContent = $profileContent -replace "(?s)`n?# <<BEGIN:tsbuild>>.*?# <<END:tsbuild>>", ""
+            [System.IO.File]::WriteAllText($PROFILE, $profileContent.Trim(), [System.Text.UTF8Encoding]::new($true))
+            Remove-Item Function:tsbuild -ErrorAction SilentlyContinue
+            Write-Host "✅ tsbuild をアンインストールしました。" -ForegroundColor Green
+        } else {
+            Write-Host "⚠ tsbuild はインストールされていません。" -ForegroundColor Yellow
+        }
+        return
+    }
 
     $localVersion = "1.0.1"
     $remoteVersion = $null
