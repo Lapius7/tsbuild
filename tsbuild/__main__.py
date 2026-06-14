@@ -72,11 +72,11 @@ def _detect_lang(override: Optional[str] = None) -> str:
 
 T: dict = {
     "ja": {
-        "tagline":    "Bun + TypeScript 開発サーバーをホットリロード付きで1コマンド起動",
+        "tagline":    "Bun + TypeScript 開発サーバーをホットリロード付きで１コマンド起動",
         "author":     "開発者",
-        "ver_ok":     "✓ 最新です",
-        "ver_fail":   "(バージョン確認失敗)",
-        "ver_new":    "↑ v{} が利用可能",
+        "ver_ok":     "最新",
+        "ver_fail":   "確認失敗",
+        "ver_new":    "↑ v{}",
         "update":     "  ↑ 新バージョン v{} があります — pip install --upgrade tsbuild",
         "guide":      "使い方",
         "help_lbl":   "ヘルプ",
@@ -134,9 +134,9 @@ T: dict = {
     "en": {
         "tagline":    "Launch a Bun + TypeScript dev server with hot-reload in one command",
         "author":     "Author",
-        "ver_ok":     "✓ up to date",
-        "ver_fail":   "(version check failed)",
-        "ver_new":    "↑ v{} available",
+        "ver_ok":     "latest",
+        "ver_fail":   "check failed",
+        "ver_new":    "↑ v{}",
         "update":     "  ↑ New version v{} available — pip install --upgrade tsbuild",
         "guide":      "Guide",
         "help_lbl":   "Help",
@@ -257,10 +257,10 @@ def _is_newer(remote: str) -> bool:
 
 def _ver_badge(remote: Optional[str], lang: str) -> str:
     s = T[lang]
-    if remote is None:        return c(s["ver_fail"], GRAY)
-    if remote == __version__: return c(s["ver_ok"], GREEN)
-    if _is_newer(remote):     return c(s["ver_new"].format(remote), YEL)
-    return c(s["ver_ok"], GREEN)
+    if remote is None:        return c(f"（{s['ver_fail']}）", GRAY)
+    if remote == __version__: return c(f"（{s['ver_ok']}）", GREEN)
+    if _is_newer(remote):     return c(f"（{s['ver_new'].format(remote)}）", YEL)
+    return c(f"（{s['ver_ok']}）", GREEN)
 
 
 def _logo():
@@ -273,11 +273,11 @@ def show_info(remote: Optional[str], lang: str):
     s = T[lang]
     print()
     print(dbar())
-    print(f"  ⚡  {_logo()}  {c(f'v{__version__}', GRAY)}    {_ver_badge(remote, lang)}")
+    print(f"  ⚡  {_logo()}  {c(f'v{__version__}', GRAY)}{_ver_badge(remote, lang)}")
     print(dbar())
     print(f"\n  {c(s['tagline'], GRAY)}\n")
     W = 10
-    print(f"  {c((s['author']+' ').ljust(W), GRAY)}Lapius7")
+    print(f"  {c(s['author'], GRAY)}    Lapius7（https://dev.lapius7.com）")
     print(f"  {c('X'.ljust(W), GRAY)}https://x.com/Lapius7")
     print(f"  {c('GitHub'.ljust(W), GRAY)}https://github.com/Lapius7/tsbuild")
     print(f"  {c('PyPI'.ljust(W), GRAY)}https://pypi.org/project/tsbuild")
