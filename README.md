@@ -19,6 +19,12 @@
 pip install tsbuild
 ```
 
+npm からも入れられます（Python 3.9 以降が必要）:
+
+```bash
+npm i -g @lapius/tsbuild
+```
+
 > [!NOTE]
 >
 > - PowerShell・CMD・Windows Terminal どれからでも使えます。
@@ -102,6 +108,8 @@ tsbuild
 ```bash
 pip install --upgrade tsbuild
 ```
+
+npm で入れた場合は `npm i -g @lapius/tsbuild` で更新します（`tsbuild --update` でも可）。
 
 ---
 

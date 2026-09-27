@@ -237,8 +237,31 @@ def check_bun(lang: str):
 
 # ── Version ────────────────────────────────────────────────────────
 
+# npm 版（@lapius/tsbuild）から起動された場合は、最新版の確認と更新を npm で行う
+NPM_PACKAGE = "@lapius/tsbuild"
+IS_NPM = os.environ.get("LAPIUS_CHANNEL") == "npm"
+if IS_NPM:
+    for _s in T.values():
+        for _k, _v in _s.items():
+            if isinstance(_v, str):
+                _s[_k] = _v.replace("pip install --upgrade tsbuild", "npm i -g " + NPM_PACKAGE)
+
+
+def _do_npm_upgrade() -> bool:
+    npm = "npm.cmd" if os.name == "nt" else "npm"
+    try:
+        result = subprocess.run([npm, "i", "-g", NPM_PACKAGE + "@latest"], capture_output=True)
+    except OSError:
+        return False
+    return result.returncode == 0
+
+
 def fetch_remote_version() -> Optional[str]:
     try:
+        if IS_NPM:
+            url = f"https://registry.npmjs.org/{NPM_PACKAGE}/latest"
+            with urllib.request.urlopen(url, timeout=3) as r:
+                return json.loads(r.read())["version"]
         url = "https://pypi.org/pypi/tsbuild/json"
         with urllib.request.urlopen(url, timeout=3) as r:
             return json.loads(r.read())["info"]["version"]
@@ -386,6 +409,8 @@ def _fmt_watch(line: str, lang: str, t_start: list) -> str:
 # ── Self-update ────────────────────────────────────────────────────
 
 def _do_pip_upgrade(pkg: str) -> bool:
+    if IS_NPM:
+        return _do_npm_upgrade()
     result = subprocess.run(
         [sys.executable, "-m", "pip", "install", "--upgrade", pkg],
         capture_output=True
