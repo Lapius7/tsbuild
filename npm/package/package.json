@@ -1,0 +1,28 @@
+{
+  "name": "@lapius/tsbuild",
+  "version": "0.0.0",
+  "description": "Bun + TypeScript 開発サーバーをホットリロード付きで1コマンド起動する CLI（要 Python 3.9+）",
+  "keywords": [
+    "cli",
+    "bun",
+    "typescript",
+    "dev-server",
+    "hot-reload"
+  ],
+  "homepage": "https://github.com/Lapius7/tsbuild",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Lapius7/tsbuild.git"
+  },
+  "license": "MIT",
+  "bin": {
+    "tsbuild": "bin/tsbuild"
+  },
+  "files": [
+    "bin/tsbuild",
+    "lib"
+  ],
+  "engines": {
+    "node": ">=18"
+  }
+}
