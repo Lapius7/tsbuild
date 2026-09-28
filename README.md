@@ -15,14 +15,18 @@
 
 ## 🛠️ インストール方法
 
-```bash
-pip install tsbuild
-```
-
-npm からも入れられます（Python 3.9 以降が必要）:
+**npm（推奨）:**
 
 ```bash
 npm i -g @lapius/tsbuild
+```
+
+`tsbuild` コマンドが使えるようになります（Node.js 18 以降が必要。本体はシステムの Python 3.9+ で動きます）。
+
+**pip:**
+
+```bash
+pip install tsbuild
 ```
 
 > [!NOTE]
@@ -105,11 +109,19 @@ tsbuild
 
 ## 🔄 アップデート
 
+npm で入れた場合:
+
+```bash
+npm i -g @lapius/tsbuild
+```
+
+pip で入れた場合:
+
 ```bash
 pip install --upgrade tsbuild
 ```
 
-npm で入れた場合は `npm i -g @lapius/tsbuild` で更新します（`tsbuild --update` でも可）。
+どちらの場合も `tsbuild --update` で、入れた方法に合わせて更新できます。
 
 ---
 
