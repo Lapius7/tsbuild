@@ -15,7 +15,9 @@
 
 ## 🛠️ インストール方法
 
-**npm（推奨）:**
+**pnpm（推奨）:**
+
+> このパッケージは **pnpm 前提**です。npm と pnpm の両方に入れると同じコマンドが二重になるため、`pnpm add -g` だけを使ってください。
 
 ```bash
 pnpm add -g @lapius/tsbuild
