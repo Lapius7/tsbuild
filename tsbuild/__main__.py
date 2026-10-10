@@ -244,7 +244,7 @@ if IS_NPM:
     for _s in T.values():
         for _k, _v in _s.items():
             if isinstance(_v, str):
-                _s[_k] = _v.replace("pip install --upgrade tsbuild", "npm i -g " + NPM_PACKAGE)
+                _s[_k] = _v.replace("pip install --upgrade tsbuild", "pnpm add -g " + NPM_PACKAGE)
 
 
 def _do_npm_upgrade() -> bool:
@@ -570,8 +570,8 @@ def _lapius_footer(lang: str) -> str:
     if shutil.which("lapacks"):
         tip = "@lapius のツール: lapacks で一覧・インストール・更新" if ja else "More @lapius tools: run lapacks to list, install and update them"
     else:
-        tip = ("@lapius のツール: npm i -g @lapius/lapacks で一覧・インストール・更新を管理" if ja
-               else "More @lapius tools: npm i -g @lapius/lapacks to list, install and update them")
+        tip = ("@lapius のツール: pnpm add -g @lapius/lapacks で一覧・インストール・更新を管理" if ja
+               else "More @lapius tools: pnpm add -g @lapius/lapacks to list, install and update them")
     return f"{s}\n{tip}"
 
 

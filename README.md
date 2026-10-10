@@ -18,7 +18,7 @@
 **npm（推奨）:**
 
 ```bash
-npm i -g @lapius/tsbuild
+pnpm add -g @lapius/tsbuild
 ```
 
 `tsbuild` コマンドが使えるようになります（Node.js 18 以降が必要。本体はシステムの Python 3.9+ で動きます）。
@@ -112,7 +112,7 @@ tsbuild
 npm で入れた場合:
 
 ```bash
-npm i -g @lapius/tsbuild
+pnpm add -g @lapius/tsbuild
 ```
 
 pip で入れた場合:
