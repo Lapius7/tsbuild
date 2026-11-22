@@ -1,147 +1,122 @@
-# tsbuild
+<div align="center">
 
-`tssetup` で構築した Bun + TypeScript プロジェクトにおいて、開発サーバーの起動・TypeScript の自動ビルド・ブラウザのホットリロードを1コマンドで一元管理する開発支援ツールです。
+<p align="center">
+  <img src="docs/images/banner.png" alt="tsbuild" width="100%">
+</p>
 
-## 🚀 特徴
+<p align="center"><b>English</b> | <a href="README.ja.md">日本語</a></p>
 
-- **1コマンド起動:** ローカルWebサーバー起動・ブラウザ自動起動・TS監視ビルドをすべて開始します。
-- **ポート衝突の自動回避:** デフォルトの 53000 番ポートが使用中の場合、空いているポートを自動で探します。
-- **404エラー防止:** 起動と同時に初回コンパイルを実行し、ブラウザ起動直後の404エラーを防ぎます。
-- **ホットリロード:** `src/` 内のコード変更や `index.html` の編集を検知し、ブラウザを自動でリロードします。
-- **ゾンビプロセス防止:** `Ctrl + C` で終了した際に、バックグラウンドの Bun サーバーを自動停止・クリーンアップします。
-- **自動バージョン確認:** 実行時に最新バージョンを確認し、更新がある場合は通知します。
+<h1 align="center">tsbuild</h1>
+
+<h3 align="center">Start the dev server, the TypeScript build and browser reload with one command.</h3>
+
+<p align="center">Runs the dev server, the <code>tsc --watch</code> build and browser hot reload for a Bun + TypeScript project made with <a href="https://github.com/Lapius7/tssetup">tssetup</a>.</p>
+
+<p align="center">
+  <a href="https://www.npmjs.com/package/@lapius/tsbuild"><img alt="npm" src="https://img.shields.io/npm/v/@lapius/tsbuild?style=flat-square&color=cb3837&logo=npm"></a>
+  <a href="https://pypi.org/project/tsbuild/"><img alt="PyPI" src="https://img.shields.io/pypi/v/tsbuild?style=flat-square&color=3775a9&logo=pypi&logoColor=white"></a>
+  <a href="https://bun.sh"><img alt="Bun" src="https://img.shields.io/badge/runtime-Bun-fbf0df?logo=bun&logoColor=000000&style=flat-square&labelColor=000000"></a>
+  <a href="LICENSE"><img alt="License" src="https://img.shields.io/github/license/Lapius7/tsbuild?style=flat-square&color=97ca00"></a>
+  <a href="https://github.com/Lapius7/tsbuild/stargazers"><img alt="Stars" src="https://img.shields.io/github/stars/Lapius7/tsbuild?style=flat-square&color=e3b341&logo=github"></a>
+  <a href="https://github.com/Lapius7/tsbuild/commits/main"><img alt="Last commit" src="https://img.shields.io/github/last-commit/Lapius7/tsbuild?style=flat-square&color=3b82f6"></a>
+</p>
+
+<p align="center"><a href="#quick-start">Quick start</a> · <a href="#options">Options</a> · <a href="#how-it-works">How it works</a> · <a href="#update">Update</a></p>
+
+</div>
 
 ---
 
-## 🛠️ インストール方法
+## Features
 
-**pnpm（推奨）:**
+- **One command**: starts the local web server, opens the browser and runs the TypeScript watch build.
+- **Free port**: tries port 53000 first and looks for a free one if it is in use.
+- **No 404 on launch**: compiles once before the browser opens.
+- **Hot reload**: reloads the browser when files in `src/` or `index.html` change.
+- **Clean exit**: `Ctrl + C` stops the background Bun server.
+- **Update check**: shows a notice when a newer version exists.
 
-> このパッケージは **pnpm 前提**です。npm と pnpm の両方に入れると同じコマンドが二重になるため、`pnpm add -g` だけを使ってください。
+## Quick start
 
-```bash
+You need **Python 3.9+** and **Bun**. Install with pnpm (recommended) or pip:
+
+```sh
 pnpm add -g @lapius/tsbuild
-```
-
-`tsbuild` コマンドが使えるようになります（Node.js 18 以降が必要。本体はシステムの Python 3.9+ で動きます）。
-
-**pip:**
-
-```bash
+# or
 pip install tsbuild
 ```
 
 > [!NOTE]
->
-> - PowerShell・CMD・Windows Terminal どれからでも使えます。
-> - 動作には **Python 3.9+** と **Bun** が必要です。
+> The npm package is built for pnpm. Do not install it with both npm and pnpm, or the same command exists twice. The npm package is a launcher that runs the Python tool, so it also needs Node.js 18 or later.
 
----
+Run it in the project root, the folder that holds `package.json` and `server.ts`:
 
-## ⚙️ 動作に必要な環境（依存関係）
-
-| ツール | 用途 | インストール |
-| :--- | :--- | :--- |
-| **Python 3.9+** | tsbuild 本体の実行 | [python.org](https://www.python.org/) |
-| **Bun** | 開発サーバー起動・TSコンパイル | `powershell -c "irm bun.sh/install.ps1 \| iex"` |
-
----
-
-## ⚡ 使い方
-
-`tssetup` で構築したプロジェクトのルートディレクトリ（`package.json` と `server.ts` があるフォルダ）で実行します。
-
-```bash
-tsbuild
+```sh
+tssetup my-app   # create a project (see tssetup)
+tsbuild          # start the dev server
 ```
 
-プロジェクト外（`package.json` / `server.ts` がないディレクトリ）で実行するとバージョン情報・インフォ画面が表示されます。
+Outside a project, `tsbuild` prints the version and an info screen.
 
-### パラメータ
+| Tool | Used for | Install |
+|---|---|---|
+| Python 3.9+ | Running tsbuild | [python.org](https://www.python.org/) |
+| Bun | Dev server and TypeScript compile | `powershell -c "irm bun.sh/install.ps1 \| iex"` |
 
-| パラメータ | 短縮形 | 説明 |
-| :--- | :--- | :--- |
-| `--version` | `-v` | バージョンを表示 |
-| `--help` | `-h` | ヘルプを表示 |
+## Options
 
----
+| Option | Short | What it does |
+|---|---|---|
+| `--port <num>` | `-p` | Starting port (default 53000) |
+| `--no-browser` | `-n` | Do not open the browser |
+| `--update` | `-u` | Update to the latest version, using the way it was installed |
+| `--lang <lang>` | | Display language: `ja` or `en` |
+| `--version` | `-v` | Show the version |
+| `--help` | `-h` | Show help |
 
-## 📁 対象プロジェクトの構成
+## How it works
 
-`tsbuild` は `tssetup` で作成した以下の構成を前提としています。
+1. **Find a port**: searches for a free port from 53000.
+2. **First build**: runs `bun x tsc` once so the JS exists before the browser opens.
+3. **Open the browser**: opens `http://localhost:53000`, or the port it found.
+4. **Watch**: `bun x tsc --watch` recompiles on every change.
+5. **Hot reload**: tells the browser to reload over WebSocket after each build.
+
+### Expected project layout
+
+tsbuild expects the layout that `tssetup` creates:
 
 ```
 my-app/
 ├── src/
-│   └── index.ts        ← 編集対象の TypeScript ファイル
-├── dist/               ← tsc が自動生成する JS 出力先
-├── index.html          ← フロントエンドの HTML
-├── server.ts           ← tsbuild が起動する Bun サーバー
-├── tsconfig.json       ← TypeScript コンパイラ設定
-└── package.json        ← Bun プロジェクト設定
+│   └── index.ts        ← TypeScript you edit
+├── dist/               ← JS output from tsc
+├── index.html          ← frontend HTML
+├── server.ts           ← Bun server started by tsbuild
+├── tsconfig.json       ← TypeScript config
+└── package.json        ← Bun project config
 ```
 
----
+## Update
 
-## 🚀 プロジェクトの始め方
-
-```bash
-# 1. プロジェクトを作成（カレントディレクトリが自動で移動）
-tssetup my-app
-
-# 2. 開発サーバーを起動
-tsbuild
+```sh
+tsbuild --update
 ```
 
----
+Or reinstall: `pnpm add -g @lapius/tsbuild` / `pip install --upgrade tsbuild`.
 
-## コマンド実行時の挙動
+## Safety
 
-1. **ポート自動探索** — `53000` 番から順に空きポートを検索してサーバーを起動
-2. **初回ビルド** — `bun x tsc` で初回コンパイルを実行（ブラウザ起動前に JS を生成）
-3. **ブラウザ自動起動** — `http://localhost:53000`（または自動検出したポート）を開く
-4. **リアルタイム監視** — `bun x tsc --watch` でファイル変更を検知して自動コンパイル
-5. **ホットリロード** — ビルド完了後、WebSocket 経由でブラウザに通知してリロード
+> [!NOTE]
+> The README and PyPI metadata say Windows (PowerShell, CMD, Windows Terminal). Linux and macOS have not been verified for this README.
 
-### 終了方法
+The software is provided as is, and the author takes no responsibility for any damage from using it.
 
-**`Ctrl + C`** を押すと、バックグラウンドの Bun サーバーを自動停止してクリーンアップします。
+## Contact
 
----
+- X: [@Lapius7](https://x.com/Lapius7)
+- [GitHub Issues](https://github.com/Lapius7/tsbuild/issues)
 
-## 🔄 アップデート
+## License
 
-npm で入れた場合:
-
-```bash
-pnpm add -g @lapius/tsbuild
-```
-
-pip で入れた場合:
-
-```bash
-pip install --upgrade tsbuild
-```
-
-どちらの場合も `tsbuild --update` で、入れた方法に合わせて更新できます。
-
----
-
-## ✉️ 問い合わせ先
-
-- **X (旧Twitter):** [@Lapius7](https://x.com/Lapius7)
-- **GitHub Issues:** [Lapius7/tsbuild/issues](https://github.com/Lapius7/tsbuild/issues)
-
----
-
-## ⚠️ 免責事項
-
-本ソフトウェアの使用によって生じた直接的・間接的な損害について、作者は一切の責任を負いません。自己責任のもとでご使用ください。
-
----
-
-## 📄 ライセンス & コピーライト
-
-本プロジェクトは [MIT License](https://opensource.org/licenses/MIT) のもとで公開されています。
-
-Copyright (c) 2026 Lapius7
+[MIT](LICENSE) © 2026 Lapius7
